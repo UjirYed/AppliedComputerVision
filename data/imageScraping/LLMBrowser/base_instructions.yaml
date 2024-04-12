@@ -1,0 +1,43 @@
+compiled:
+- env.get("https://www.google.com")
+- images_element = env.find_element(by='xpath', value="//a[contains(normalize-space(),
+  'Images')]")
+- env.click(images_element)
+- textareas = env.find_elements(by='tag name', value='textarea')
+- visible_textareas = []
+- 'for textarea in textareas:'
+- '    if env.is_element_visible_in_viewport(textarea):'
+- '        visible_textareas.append(textarea)'
+- first_visible_textarea = visible_textareas[0]
+- env.click(first_visible_textarea)
+- env.send_keys(first_visible_textarea, "$REPLACEME$")
+- env.send_keys(first_visible_textarea, Keys.ENTER)
+- env.scroll("bottom")
+- env.wait(3)
+- image_list = []
+- 'for _ in range(10):'
+- '    elements = env.find_elements(by=''xpath'', value="//img[contains(@id, ''dimg'')
+  and @height >= 100 and @width >= 100]")'
+- '    for element in elements:'
+- '        if element.get_attribute("src") not in image_list:'
+- '            image_list.append(element.get_attribute("src"))'
+- '    env.scroll("bottom")'
+- env.save("\n".join(image_list), "$QUERYFILE$.txt")
+- env.wait(20)
+instructions:
+- '- Go to Google.com'
+- '- Find the element that says "Images".'
+- '- Click on this element.'
+- '- Find all textareas'
+- '- Find the first visible textarea'
+- '- Click on the first visible textarea.'
+- '- Type in "dining hall images" and press enter.'
+- '- Scroll to the bottom.'
+- '- Wait 3 seconds.'
+- '- Get the next fifty elements that have an id containing substring "dimg" and a
+  height >= 100 and width >= 100. Avoid duplicate images.'
+- '- For each element, get the "src" attribute, and store to a list. '
+- '- Scroll to the bottom and repeat getting the first fifty elements 10 times.'
+- ''
+- '- Write this list to a file called images.txt'
+- '- Wait for 20 seconds.'

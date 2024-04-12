@@ -1,0 +1,39 @@
+compiled:
+- env.get("https://www.google.com")
+- images_element = env.find_element(by='xpath', value="//a[contains(normalize-space(),
+  'Images')]")
+- env.click(images_element)
+- textareas = env.find_elements(by='tag name', value='textarea')
+- first_visible_textarea = None
+- 'for textarea in textareas:'
+- '    if env.is_element_visible_in_viewport(textarea):'
+- '        first_visible_textarea = textarea'
+- '        break'
+- env.click(first_visible_textarea)
+- env.send_keys(first_visible_textarea, "dining hall images")
+- env.send_keys(first_visible_textarea, Keys.ENTER)
+- env.wait(5)
+- env.scroll("bottom")
+- elements = env.find_elements(by='xpath', value="//img[contains(@id, 'dimg') and
+  @height >= 50 and @width >= 50]")
+- image_urls = []
+- 'for element in elements[:50]:'
+- '    src = element.get_attribute("src")'
+- '    image_urls.append(src)'
+- env.save("\n".join(image_urls), "images.txt")
+- env.wait(20)
+instructions:
+- '- Go to Google.com'
+- '- Find the element that says "Images".'
+- '- Click on this element.'
+- '- Find all textareas'
+- '- Find the first visible textarea'
+- '- Click on the first visible textarea.'
+- '- Type in "dining hall images" and press enter.'
+- '- Wait 10 seconds.'
+- '- Get the first ten elements that have an id containing substring "dimg" and a
+  height >= 50 and width >= 50.'
+- '- For each element, get the "src" attribute, and store to a list. '
+- ''
+- '- Write this list to a file called images.txt'
+- '- Wait for 20 seconds.'
