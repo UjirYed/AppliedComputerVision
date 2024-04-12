@@ -3,7 +3,6 @@ import time
 import os
 from werkzeug.utils import secure_filename
 
-
 UPLOAD_FOLDER = os.path.abspath('uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
