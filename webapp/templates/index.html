@@ -1,25 +1,51 @@
 <!DOCTYPE html>
 <head>
     <title>Room Capacity Demo</title>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+20&display=swap" rel="stylesheet">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='index.css') }}">
 </head>
 <body>
     <div class="content">
         <h1>Room Capacity Demo</h1>
-        <div class="upload">
+        <div class="upload" id="upload">
             <form id="imgForm">
                 <div class="form">
                     <h2>Upload an image of a dining hall:</h2>
                     <input id="fileInput" type="file" name="file" accept="image/jpeg, image/png">
-                    <input type="submit">
                 </div>
             </form>
+        </div>
+        <div class="wait" id="wait">
+            <div class="loader"></div>
+            <h2 class="pleaseWait">Please wait...</p>
+        </div>
+        <div id="output">
+            <div class="cu-dining-crowdedness ng-scope" data-ng-if="crowdedness &amp;&amp; activeLocation.display_crowd == '1' &amp;&amp; activeLocation.crowd_id" style="display: block;">
+                <div class="indicator-item">
+                    <p>Current Seating Capacity&nbsp;<a href="javascript:void(0)" data-target="#indicator-text" class="cu-dining-trigger"><i class="fa fa-info-circle"></i></a></p>
+                    <!-- ngIf: activeLocation.crowd_info -->
+                    <div class="indicator">
+                        <div class="marker ng-binding" data-ng-bind="getCrowdedness(activeLocation.crowd_id, activeLocation.crowd_max) + ' Full'" style="left: 72%; display: block;">72% Full</div>
+                        <div class="bar" style="width: 72%;"></div>
+                    </div>
+                </div>
+            </div>
+            <p id="result"></p>
         </div>
     </div>
 
     <script>
-        document.getElementById('imgForm').addEventListener('submit', function(event) {
+        //On file upload, send the image to the server and wait for the response.
+        //In the meantime, make the original form disappear and show a loading icon.
+        document.getElementById('fileInput').addEventListener('change', function(event) {
             event.preventDefault();
+
+            document.getElementById("upload").style.display = "none";
+            document.getElementById("wait").style.display = "inline-block";
 
             var formData = new FormData();
             formData.append('file', document.getElementById('fileInput').files[0]);
@@ -28,8 +54,12 @@
             xhr.open('POST', '/occupancy', true);
             xhr.onload = function() {
                 if (xhr.status === 200) {
-                    console.log('Image uploaded successfully');
-                    // You can handle the response from the server here
+                    response = xhr.responseText;
+
+                    document.getElementById("wait").style.display = "none";
+                    document.getElementById("output").style.display = "inline-block"
+
+                    document.getElementById("result").innerText = response
                 } else {
                     console.error('Error uploading image');
                 }
