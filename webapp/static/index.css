@@ -1,0 +1,24 @@
+body {
+    background-color: #E8E758;
+}
+
+.content {
+    text-align: center;
+}
+
+h1 {
+    font-family: "Old English Text MT";
+    font-size: 5em;
+    color: #283540;
+}
+
+.form {
+    display: inline-block;
+    position: relative;
+    width: 40%;
+    text-align: center;
+    border-radius: 10px;
+    border-color: #283540;
+    border-style: dashed;
+    padding-bottom: 2em;
+}

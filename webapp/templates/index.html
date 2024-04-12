@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<head>
+    <title>Room Capacity Demo</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='index.css') }}">
+</head>
+<body>
+    <div class="content">
+        <h1>Room Capacity Demo</h1>
+        <div class="upload">
+            <form id="imgForm">
+                <div class="form">
+                    <h2>Upload an image of a dining hall:</h2>
+                    <input id="fileInput" type="file" name="file" accept="image/jpeg, image/png">
+                    <input type="submit">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('imgForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var formData = new FormData();
+            formData.append('file', document.getElementById('fileInput').files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/occupancy', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    console.log('Image uploaded successfully');
+                    // You can handle the response from the server here
+                } else {
+                    console.error('Error uploading image');
+                }
+            }
+            xhr.send(formData);
+        });
+    </script>
+</body>
