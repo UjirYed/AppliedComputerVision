@@ -3,12 +3,14 @@
 # then, we call claude on the image that we have just retrieved.
 # we extract the label from the response, and then store it in the appropriate place within the dataset folder
 #
-
 import anthropic
 import base64
 import httpx
 import typing
 import time
+import os
+import shutil
+import requests
 
 #Creating our claude client.
 client = anthropic.Anthropic(
@@ -17,13 +19,15 @@ client = anthropic.Anthropic(
 )
 
 
-def load_image(image_link: str) -> str:
+def load_image(image_link: str, base_64 = False):
     """
-    Takes in image data and returns an encoding of the image in base64.
+    Takes in image path and loads in the image. If base_64 is specified, then a string encoding in base_64 is returned. 
     """
     # did we retrieve a link or the actual image data when scraping google?
     if "https" in image_link:
-        image_data = base64.b64encode(httpx.get(image_link).content).decode("utf-8")
+        image_data = requests.get(image_link).content
+        if base_64:
+            image_data = base64.b64encode(image_data).decode("utf-8")
     else:
         image_data = image_link.split(',')
         image_data = image_data[1]
@@ -34,9 +38,8 @@ def autolabel(image_link_file_path, prompt, label_file_path):
         image_links =  f.read().splitlines()
     label_file = open(label_file_path, "a")
     for image_link in image_links:
-        image_data = load_image(image_link)
+        image_data = load_image(image_link, base_64=True)
 
-        print(image_data)
         try:
             message = client.messages.create(
             model="claude-3-sonnet-20240229", #claude-3-haiku-20240307
@@ -61,16 +64,50 @@ def autolabel(image_link_file_path, prompt, label_file_path):
                 }
             ],
             )
-            label = message.content[0].text[-1] + "\n"
+            label = message.content[0].text[-5] + "\n"
         except Exception as e:
             print(f"Error writing label for {image_link}: {str(e)}")
             label = "N/A\n"
         time.sleep(10)
         label_file.write(label)
 
+def move_images_to_dataset(image_link_file_path: str, label_file_path: str, dataset_path: str) -> None:
+    """
+    Takes in image data file and corresponding label file. Loads actual images into a directory with the PyTorch ImageFolder structure.
+    """
+    with open(image_link_file_path) as f:
+        image_links =  f.read().splitlines()
+
+    with open(label_file_path) as f:
+        labels = f.read().splitlines()
+    
+    for i, (image_link, label) in enumerate(zip(image_links, labels)):
+        image = load_image(image_link)
+
+        label_dir = os.path.join(dataset_path, label)
+        if not os.path.exists(label_dir):
+            os.makedirs(label_dir)
+
+        image_filename = os.path.basename(f"{i}.jpeg")
+        image_path = os.path.join(label_dir, image_filename)
+
+        if isinstance(image, str):
+            image = base64.b64decode(image)
+
+        with open(image_path, 'wb') as img_file:
+            img_file.write(image)
+            print(f"{i}.jpeg saved to {label_dir}")
+
+
+
 if __name__ == "__main__":
     image_link_file_path = "image_link_test.txt"
     label_file_path = "label_file.txt"
+    dataset_path = "testdataset"
+    print(os.path.exists("testdataset"))
+
+    move_images_to_dataset(image_link_file_path, label_file_path, dataset_path)
+    exit()
     prompt = "USER: Classify on a scale of 1-5 how busy this dining hall looks based on both the number of people and empty spaces (like chairs and tables). If there are no people and lots of empty available areas for them to be in, then it is empty. Classify as: 1-sparse/empty, 2-not too busy, 3-moderately busy, 4-busy, 5-extremely busy. Return just 1 number. After classifying try one more time, thinking deeply, not getting distracted by irrelevant details of the dining hall like architecture, only the busyness. At the end, print your final number at the end of your response.:"
     with open(image_link_file_path) as f:
         image_links = f.read().splitlines()

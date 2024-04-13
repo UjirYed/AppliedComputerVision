@@ -3,3 +3,4 @@
 /data/imageScraping/LLMBrowser/chromedriver-mac-arm64
 /data/imageScraping/LLMBrowser/user_data
 webapp/__pycache__/app.cpython-312.pyc
+/data/autoLabelModels/testdataset
