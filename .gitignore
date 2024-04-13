@@ -2,4 +2,4 @@
 /data/imageScraping/LLMBrowser/.DS_Store
 /data/imageScraping/LLMBrowser/chromedriver-mac-arm64
 /data/imageScraping/LLMBrowser/user_data
-.DS_Store
+webapp/__pycache__/app.cpython-312.pyc
