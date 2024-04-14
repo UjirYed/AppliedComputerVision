@@ -22,7 +22,7 @@ compiled:
 - '        if element.get_attribute("src") not in image_list:'
 - '            image_list.append(element.get_attribute("src"))'
 - '    env.scroll("bottom")'
-- env.save("\n".join(image_list), "$QUERYFILE$.txt")
+- env.save("\n".join(image_list), "image_urls/$QUERYFILE$.txt")
 - env.wait(20)
 instructions:
 - '- Go to Google.com'

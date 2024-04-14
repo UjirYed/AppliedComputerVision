@@ -5,7 +5,6 @@
 #
 import anthropic
 import base64
-import httpx
 import typing
 import time
 import os
@@ -123,10 +122,12 @@ def move_images_to_dataset(image_link_file_path: str, label_file_path: str, data
 
 
 if __name__ == "__main__":
-    image_link_file_path = "image_link_test.txt"
+    print(os.path.exists("../imageScraping/LLMBrowser/image_urls/outputab"))
+
+    image_link_file_path = "../imageScraping/LLMBrowser/image_urls/outputab"
     label_file_path = "label_file.txt"
     dataset_path = "testdataset"
-    acceptable_labels = ['0','1','2','3','4','5', '"N/A"']
+    acceptable_labels = ['0','1','2','3','4','5', 'N/A']
 
     
     prompt = "Classify on a scale of 0-5 how busy this dining hall looks, based on both the number of people and empty spaces (like chairs and tables) and whether it actually is a dining hall at all. If there are no people and lots of empty available areas for them to be in, then it is empty. Classify as: 0 - not even remotely a dining hall or is just a picture of food without people or seating in it, 1-sparse/empty, 2-not too busy, 3-moderately busy, 4-busy, 5-extremely busy. Return just 1 number. After classifying, try one more time, not getting distracted by irrelevant details of the dining hall like architecture, only the busyness. Then, provide ONLY the final classification number in the format $classification$."
