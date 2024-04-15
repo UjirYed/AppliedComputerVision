@@ -15,7 +15,7 @@ import re
 #Creating our claude client.
 client = anthropic.Anthropic(
     # defaults to os.environ.get("ANTHROPIC_API_KEY")
-    api_key="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",
+    api_key="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",
 )
 
 
@@ -122,11 +122,11 @@ def move_images_to_dataset(image_link_file_path: str, label_file_path: str, data
 
 
 if __name__ == "__main__":
-    print(os.path.exists("../imageScraping/LLMBrowser/image_urls/outputaa"))
+    print(os.path.exists("../imageScraping/LLMBrowser/image_urls/outputab"))
 
-    image_link_file_path = "../imageScraping/LLMBrowser/image_urls/outputaa"
-    label_file_path = "label_file.txt"
-    dataset_path = "testdataset"
+    image_link_file_path = "../imageScraping/LLMBrowser/image_urls/outputab"
+    label_file_path = "label_file2.txt"
+    dataset_path = "testdataset2"
     acceptable_labels = ['0','1','2','3','4','5', 'N/A']
 
     
