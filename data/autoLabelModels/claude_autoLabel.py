@@ -83,7 +83,7 @@ def autolabel(image_link_file_path, prompt, label_file_path):
             print(label)
         except Exception as e:
             print(f"Error writing label for {image_link}: {str(e)}")
-            label = "N/A\n"
+            label = "error"
         time.sleep(10)
         label_file.write(label + "\n")
 
