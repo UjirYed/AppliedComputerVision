@@ -1,0 +1,296 @@
+
+
+
+
+
+
+
+  1%|          | 10/1900 [00:17<41:33,  1.32s/it]
+
+
+
+
+
+  1%|          | 19/1900 [00:27<38:57,  1.24s/it]
+ 67%|██████▋   | 2/3 [00:00<00:00,  5.42it/s]
+
+
+  1%|          | 19/1900 [00:30<38:57,  1.24s[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-19)... Done. 0.9s
+{'loss': 1.6046, 'grad_norm': 4.475105285644531, 'learning_rate': 1.5620728572975984e-05, 'epoch': 1.05}
+
+
+
+  2%|▏         | 29/1900 [00:45<37:35,  1.21s/it]
+
+
+
+
+  2%|▏         | 38/1900 [00:53<22:32,  1.38it/s]
+
+  2%|▏         | 38/1900 [00:54<22:32,  1.38i[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-38)... Done. 0.6s
+  2%|▏         | 43/1900 [01:01<37:06,  1.20s/it]
+
+
+
+  3%|▎         | 49/1900 [01:07<30:16,  1.02it/s]
+
+
+
+
+  3%|▎         | 57/1900 [01:15<20:26,  1.50i[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-57)...
+
+  3%|▎         | 57/1900 [01:15<20:26,  1.50i[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-57)... Done. 0.5s
+{'loss': 1.5858, 'grad_norm': 4.526902198791504, 'learning_rate': 1.55865851761329e-05, 'epoch': 3.16}
+
+
+
+  4%|▎         | 69/1900 [01:29<25:10,  1.21it/s]
+
+
+  4%|▍         | 76/1900 [01:34<21:03,  1.44it/s]
+ 67%|██████▋   | 2/3 [00:00<00:00,  6.88it/s]
+
+{'eval_loss': 1.5814001560211182, 'eval_accuracy': 0.2, 'eval_runtime': 1.112, 'eval_samples_per_second': 8.993, 'eval_steps_per_second': 2.698, 'epoch': 4.0}
+{'loss': 1.624, 'grad_norm': 5.047385215759277, 'learning_rate': 1.5556750541616993e-05, 'epoch': 4.21}
+
+
+
+  5%|▍         | 88/1900 [01:49<28:04,  1.08it/s]
+
+
+  5%|▌         | 95/1900 [01:55<21:35,  1.39it/s]
+  0%|          | 0/3 [00:00<?, ?it/s]
+
+{'eval_loss': 1.5782771110534668, 'eval_accuracy': 0.2, 'eval_runtime': 1.1145, 'eval_samples_per_second': 8.972, 'eval_steps_per_second': 2.692, 'epoch': 5.0}
+  5%|▌         | 101/1900 [02:04<33:28,  1.12s/it]
+
+
+
+
+  6%|▌         | 109/1900 [02:11<28:46,  1.04it/s]
+
+  6%|▌         | 112/1900 [02:14<27:30,  1.08it/s]
+100%|██████████| 3/3 [00:00<00:00,  6.14it/s]
+
+{'eval_loss': 1.575531244277954, 'eval_accuracy': 0.1, 'eval_runtime': 1.1272, 'eval_samples_per_second': 8.872, 'eval_steps_per_second': 2.661, 'epoch': 6.0}
+  6%|▋         | 121/1900 [02:24<27:12,  1.09it/s]
+
+
+
+
+  7%|▋         | 129/1900 [02:31<27:37,  1.07it/s]
+
+  7%|▋         | 133/1900 [02:35<22:39,  1.30it/s]
+ 67%|██████▋   | 2/3 [00:00<00:00,  6.86it/s]
+
+{'eval_loss': 1.5727105140686035, 'eval_accuracy': 0.1, 'eval_runtime': 1.0907, 'eval_samples_per_second': 9.168, 'eval_steps_per_second': 2.75, 'epoch': 7.0}
+  7%|▋         | 139/1900 [02:43<32:25,  1.10s/it]
+
+
+
+
+
+  8%|▊         | 150/1900 [02:53<26:56,  1.08it/s]
+
+  8%|▊         | 152/1900 [02:56<21:17,  1.37it/s]
+
+  8%|▊         | 152/1900 [02:56<21:17,  1.37[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-152)... Done. 0.6s
+
+  8%|▊         | 160/1900 [03:06<31:54,  1.10s/it]
+
+
+
+
+  9%|▉         | 169/1900 [03:13<23:58,  1.20it/s]
+
+  9%|▉         | 171/1900 [03:16<18:50,  1.53it/s]
+
+  9%|▉         | 171/1900 [03:16<18:50,  1.53[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-171)... Done. 0.7s
+  9%|▉         | 180/1900 [03:25<26:16,  1.09it/s]
+
+
+
+
+ 10%|█         | 190/1900 [03:34<19:50,  1.44it/s]
+{'loss': 1.5919, 'grad_norm': 5.662128448486328, 'learning_rate': 1.5242629033555888e-05, 'epoch': 10.0}
+
+ 10%|█         | 190/1900 [03:35<19:50,  1.44[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-190)... Done. 0.8s
+ 10%|█         | 199/1900 [03:45<27:48,  1.02it/s]
+
+
+
+ 11%|█         | 209/1900 [03:53<19:24,  1.45it/s]
+ 67%|██████▋   | 2/3 [00:00<00:00,  7.14it/s]
+
+{'eval_loss': 1.5610384941101074, 'eval_accuracy': 0.1, 'eval_runtime': 1.0677, 'eval_samples_per_second': 9.366, 'eval_steps_per_second': 2.81, 'epoch': 11.0}
+{'loss': 1.5832, 'grad_norm': 4.217038631439209, 'learning_rate': 1.5158745235282511e-05, 'epoch': 11.05}
+ 12%|█▏        | 219/1900 [04:05<27:46,  1.01it/s]
+
+
+
+
+ 12%|█▏        | 228/1900 [04:14<19:49,  1.41it/s]
+
+ 12%|█▏        | 228/1900 [04:14<19:49,  1.41[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-228)... Done. 0.6s
+ 12%|█▏        | 237/1900 [04:23<25:41,  1.08it/s]
+
+ 13%|█▎        | 239/1900 [04:25<28:28,  1.03s/it]
+
+
+
+ 13%|█▎        | 247/1900 [04:32<19:50,  1.39it/s]
+
+
+ 13%|█▎        | 247/1900 [04:33<19:50,  1.39[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-247)... Done. 0.8s
+ 13%|█▎        | 256/1900 [04:44<28:22,  1.04s/it]
+
+ 14%|█▎        | 259/1900 [04:46<26:19,  1.04it/s]
+
+
+
+ 14%|█▍        | 266/1900 [04:52<19:17,  1.41it/s]
+
+ 14%|█▍        | 266/1900 [04:53<19:17,  1.41[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-266)... Done. 0.9s
+{'loss': 1.5529, 'grad_norm': 4.853519916534424, 'learning_rate': 1.4859306485413743e-05, 'epoch': 14.21}
+
+
+
+ 15%|█▍        | 280/1900 [05:08<27:09,  1.01s/it]
+
+
+ 15%|█▌        | 285/1900 [05:12<20:05,  1.34it/s]
+
+
+ 15%|█▌        | 285/1900 [05:13<20:05,  1.34[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-285)... Done. 0.9s
+{'loss': 1.5267, 'grad_norm': 5.910176753997803, 'learning_rate': 1.4743928276903218e-05, 'epoch': 15.26}
+
+
+
+ 16%|█▌        | 298/1900 [05:28<24:45,  1.08it/s]
+
+
+ 16%|█▌        | 304/1900 [05:32<17:59,  1.48it/s]
+
+ 16%|█▌        | 304/1900 [05:34<17:59,  1.48[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-304)... Done. 0.6s
+ 16%|█▋        | 309/1900 [05:40<30:14,  1.14s/it]
+
+
+
+
+
+ 17%|█▋        | 320/1900 [05:50<24:57,  1.05it/s]
+ 17%|█▋        | 323/1900 [05:52<17:16,  1.52it/s]
+  0%|          | 0/3 [00:00<?, ?it/s]
+
+{'eval_loss': 1.5464335680007935, 'eval_accuracy': 0.1, 'eval_runtime': 1.0691, 'eval_samples_per_second': 9.354, 'eval_steps_per_second': 2.806, 'epoch': 17.0}
+ 17%|█▋        | 330/1900 [06:00<23:43,  1.10it/s]
+
+
+
+
+ 18%|█▊        | 338/1900 [06:08<24:42,  1.05it/s]
+
+ 18%|█▊        | 342/1900 [06:11<17:46,  1.46it/s]
+
+ 18%|█▊        | 342/1900 [06:12<17:46,  1.46[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-342)... Done. 0.4s
+ 18%|█▊        | 350/1900 [06:21<24:21,  1.06it/s]
+
+
+
+
+ 19%|█▉        | 358/1900 [06:28<23:22,  1.10it/s]
+ 19%|█▉        | 361/1900 [06:30<17:22,  1.48it/s]
+  0%|          | 0/3 [00:00<?, ?it/s]
+
+{'eval_loss': 1.5420773029327393, 'eval_accuracy': 0.1, 'eval_runtime': 1.0834, 'eval_samples_per_second': 9.23, 'eval_steps_per_second': 2.769, 'epoch': 19.0}
+
+ 19%|█▉        | 368/1900 [06:40<26:35,  1.04s/it]
+
+
+
+
+
+ 20%|██        | 380/1900 [06:51<18:31,  1.37it/s]
+
+ 20%|██        | 380/1900 [06:52<18:31,  1.37[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-380)... Done. 0.4s
+{'eval_loss': 1.5402663946151733, 'eval_accuracy': 0.1, 'eval_runtime': 0.9866, 'eval_samples_per_second': 10.136, 'eval_steps_per_second': 3.041, 'epoch': 20.0}
+
+
+ 21%|██        | 390/1900 [07:02<26:31,  1.05s/it]
+
+
+
+
+
+ 21%|██        | 399/1900 [07:12<19:17,  1.30[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-399)...
+
+ 21%|██        | 399/1900 [07:12<19:17,  1.30[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-399)... Done. 0.4s
+{'loss': 1.5137, 'grad_norm': 3.971461772918701, 'learning_rate': 1.3977660229659327e-05, 'epoch': 21.05}
+
+ 21%|██▏       | 408/1900 [07:22<25:11,  1.01s/it]
+
+
+
+
+
+ 22%|██▏       | 418/1900 [07:32<16:55,  1.46[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-418)... Done. 0.4s
+{'eval_loss': 1.5370266437530518, 'eval_accuracy': 0.1, 'eval_runtime': 1.0514, 'eval_samples_per_second': 9.511, 'eval_steps_per_second': 2.853, 'epoch': 22.0}
+ 22%|██▏       | 424/1900 [07:39<23:16,  1.06it/s]
+
+
+
+ 23%|██▎       | 429/1900 [07:44<25:36,  1.04s/it]
+
+
+
+
+ 23%|██▎       | 437/1900 [07:52<17:10,  1.42[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-437)...
+
+ 23%|██▎       | 437/1900 [07:52<17:10,  1.42[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-437)... Done. 0.5s
+ 23%|██▎       | 442/1900 [07:59<27:58,  1.15s/it]
+
+
+
+ 24%|██▎       | 448/1900 [08:04<23:33,  1.03it/s]
+
+
+
+ 24%|██▍       | 455/1900 [08:11<22:30,  1.07it/s]
+
+ 24%|██▍       | 456/1900 [08:13<17:27,  1.38[34m[1mwandb[39m[22m: Adding directory to artifact (./EfficientNet_from_scratch/checkpoint-456)... Done. 0.4s
+ 24%|██▍       | 461/1900 [08:19<26:17,  1.10s/it]
+
+
+
+
+ 25%|██▍       | 469/1900 [08:27<23:39,  1.01it/s]
+
+
+ 25%|██▌       | 475/1900 [08:32<17:33,  1.35it/s]
+  0%|          | 0/3 [00:00<?, ?it/s]
+
+ 25%|██▌       | 475/1900 [08:33<17:33,  1.35--- Logging error ---
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/logging/__init__.py", line 1087, in emit
+    self.flush()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/logging/__init__.py", line 1067, in flush
+    self.stream.flush()
+OSError: [Errno 28] No space left on device
+Call stack:
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/threading.py", line 930, in _bootstrap
+    self._bootstrap_inner()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/threading.py", line 973, in _bootstrap_inner
+    self.run()
+  File "/Users/rijudey/Documents/GitHub/AppliedComputerVision/diningHallEnv/lib/python3.9/site-packages/wandb/sdk/internal/internal_util.py", line 49, in run
+    self._run()
+  File "/Users/rijudey/Documents/GitHub/AppliedComputerVision/diningHallEnv/lib/python3.9/site-packages/wandb/sdk/internal/internal_util.py", line 100, in _run
+    self._process(record)
+  File "/Users/rijudey/Documents/GitHub/AppliedComputerVision/diningHallEnv/lib/python3.9/site-packages/wandb/sdk/internal/internal.py", line 279, in _process
+    self._hm.handle(record)
+  File "/Users/rijudey/Documents/GitHub/AppliedComputerVision/diningHallEnv/lib/python3.9/site-packages/wandb/sdk/internal/handler.py", line 138, in handle
+    handler(record)
+  File "/Users/rijudey/Documents/GitHub/AppliedComputerVision/diningHallEnv/lib/python3.9/site-packages/wandb/sdk/internal/handler.py", line 146, in handle_request
+    logger.debug(f"handle_request: {request_type}")
+Message: 'handle_request: status_report'
+Arguments: ()
+--- Logging error ---

@@ -1,0 +1,48 @@
+{
+    "os": "macOS-13.5.2-arm64-arm-64bit",
+    "python": "3.9.6",
+    "heartbeatAt": "2024-04-18T01:30:47.807781",
+    "startedAt": "2024-04-18T01:30:47.447795",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "git": {
+        "remote": "https://github.com/UjirYed/AppliedComputerVision.git",
+        "commit": "2c4e4c47f502ee18b427db42d034fe9fad76ddd9"
+    },
+    "email": "rd3054@columbia.edu",
+    "root": "/Users/rijudey/Documents/GitHub/AppliedComputerVision",
+    "host": "Rijus-MacBook-Air-2.local",
+    "username": "rijudey",
+    "executable": "/Users/rijudey/Documents/GitHub/AppliedComputerVision/diningHallEnv/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 3204,
+        "min": 600,
+        "max": 3204
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3204,
+            "min": 600,
+            "max": 3204
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 228.27386474609375,
+            "used": 8.542133331298828
+        }
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 16.0
+    }
+}
