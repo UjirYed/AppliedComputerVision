@@ -1,4 +1,5 @@
-
+import torch
+from torch import nn
 
 ## OK
 ## We need to just make this take in the pooled output of a OwLViT and a YOLO model, along with a resnet.
@@ -8,7 +9,7 @@ device = "cuda:0" if torch.cuda.is_available() else "cpu"
 class BaseLineModel(nn.Module):
   def __init__(self,
                resnetModel,
-               bertModel,
+               owlvit,
                tokenizer,
                device):
     super().__init__()
