@@ -87,7 +87,7 @@ def autolabel(image_link_file_path, prompt, label_file_path):
         time.sleep(10)
         label_file.write(label + "\n")
 
-def move_images_to_dataset(image_link_file_path: str, label_file_path: str, dataset_path: str, acceptable_labels = []) -> None:
+def move_images_to_dataset(image_link_file_path: str, label_file_path: str, dataset_path: str, acceptable_labels = [], offset=0) -> None:
     """
     Takes in image data file and corresponding label file. Loads actual images into a directory with the PyTorch ImageFolder structure.
     """
@@ -109,7 +109,7 @@ def move_images_to_dataset(image_link_file_path: str, label_file_path: str, data
         if not os.path.exists(label_dir):
             os.makedirs(label_dir)
 
-        image_filename = os.path.basename(f"{i}.jpeg")
+        image_filename = os.path.basename(f"{i+offset}.jpeg")
         image_path = os.path.join(label_dir, image_filename)
 
         if isinstance(image, str):
@@ -117,7 +117,7 @@ def move_images_to_dataset(image_link_file_path: str, label_file_path: str, data
 
         with open(image_path, 'wb') as img_file:
             img_file.write(image)
-            print(f"{i}.jpeg saved to {label_dir}")
+            print(f"{i+offset}.jpeg saved to {label_dir}")
 
 
 

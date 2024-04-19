@@ -10,4 +10,4 @@ move_images_to_dataset(image_link_file_path, label_file_path, dataset_path, acce
 
 image_link_file_path = "../imageScraping/LLMBrowser/image_urls/outputab"
 label_file_path = "label_file2_processed.txt"
-move_images_to_dataset(image_link_file_path, label_file_path, dataset_path, acceptable_labels=acceptable_labels)
+move_images_to_dataset(image_link_file_path, label_file_path, dataset_path, acceptable_labels=acceptable_labels, offset=3000)
