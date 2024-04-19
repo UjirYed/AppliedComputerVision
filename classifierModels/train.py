@@ -28,13 +28,23 @@ import evaluate
 import accelerate
 import tqdm
 
-
 def collate_fn(batch):
     return {
         "pixel_values": torch.stack([x[0] for x in batch]),
         "labels": torch.LongTensor([int(x[1]) for x in batch]),
     }
 
+def compute_metrics(p):
+    metric = evaluate.load("accuracy")
+    return metric.compute(predictions=np.argmax(p.predictions, axis=1), references=p.label_ids)
+
+def no_grad(model):
+    for p in model.parameters():
+        p.requires_grad= False
+
+def yes_grad(model):
+    for p in model.parameters():
+        p.requires_grad= True
 
 if __name__ == "__main__":
     # Create the data transforms
@@ -83,7 +93,62 @@ if __name__ == "__main__":
         #num_hidden_layers = 3,
     )
 
-    resnet_from_scratch = ResNetForImageClassification(resnet_custom_config)
-    resnet_pretrained = ResNetForImageClassification.from_pretrained("microsoft/resnet-50", num_labels = 5, ignore_mismatched_sizes=True)
-    efficientnet_from_scratch = EfficientNetForImageClassification(efficientNet_custom_config)
-    efficientnet_pretrained = EfficientNetForImageClassification.from_pretrained("google/efficientnet-b0", num_labels = 5, ignore_mismatched_sizes=True)
+    # Instantiate each model into a dictionary with the model and its corresponding save directory
+    resnet_from_scratch = {"model": ResNetForImageClassification(resnet_custom_config),
+                           "save_dir": "./resnet_from_scratch"}
+
+    resnet_pretrained = {"model": ResNetForImageClassification.from_pretrained("microsoft/resnet-50", num_labels = 5, ignore_mismatched_sizes=True),
+                         "save_dir": "./resnet_pretrained"}
+    no_grad(resnet_pretrained["model"])
+    yes_grad(resnet_pretrained["model"].classifier)
+
+    efficientnet_from_scratch = {"model": EfficientNetForImageClassification(efficientNet_custom_config),
+                                "save_dir": "./efficientnet_from_scratch"}
+    
+    efficientnet_pretrained = {"model": EfficientNetForImageClassification.from_pretrained("google/efficientnet-b0", num_labels = 5, ignore_mismatched_sizes=True),
+                               "save_dir": "./efficientnet_pretrained"}
+    no_grad(efficientnet_pretrained["model"])
+    yes_grad(efficientnet_pretrained["model"].classifier)
+
+    # Create the training args
+    training_args = TrainingArguments(
+        output_dir = resnet_pretrained["save_dir"],
+        per_device_train_batch_size=16,
+        per_device_eval_batch_size=16,
+        evaluation_strategy="epoch",
+        save_strategy="epoch",
+        num_train_epochs=100,
+        lr_scheduler_type="cosine",
+        logging_steps=10,
+        save_total_limit=2,
+        remove_unused_columns=False,
+        push_to_hub=False,
+        load_best_model_at_end=True,
+        dataloader_num_workers=0,
+        #gradient_accumulation_steps=8,
+    )
+
+    # Compute the learning rate from the base learning rate
+    base_learning_rate = 1e-3
+    total_train_batch_size = (
+        training_args.train_batch_size * training_args.gradient_accumulation_steps * training_args.world_size
+    )
+
+    training_args.learning_rate = base_learning_rate * total_train_batch_size / 256
+
+    # Create the trainer
+    trainer = Trainer(
+        model=resnet_pretrained["model"],
+        args=training_args,
+        train_dataset=image_datasets['train'],
+        eval_dataset=image_datasets['val'],
+        #tokenizer=image_processor,
+        compute_metrics=compute_metrics,
+        data_collator=collate_fn
+    )
+
+    print(torch.cuda.is_available())
+
+    train_results = trainer.train()
+
+    print(train_results)
