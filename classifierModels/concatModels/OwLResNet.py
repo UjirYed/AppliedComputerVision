@@ -71,7 +71,7 @@ class OwlResNetModel(nn.Module):
       
       # Computing caption embeddings
       # tokenize all captions
-      inputs = self.tokenizer(images = pixel_values, return_tensors="pt", do_rescale=False).to("mps:0")
+      inputs = self.tokenizer(images = pixel_values, return_tensors="pt", do_rescale=False)
 
       #Pass the tokenized captions through the OwlViT model
       vit_output = self.vit(**inputs)

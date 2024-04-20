@@ -25,11 +25,15 @@ from transformers import (
     ResNetConfig,
     Owlv2VisionModel,
     AutoProcessor,
+    set_seed
 )
 from concatModels.OwLResNet import OwlResNetModel
 import evaluate
 import accelerate
 import tqdm
+
+set_seed(420)
+models = ["resnet_pretrained", "resnet_from_scratch", "efficientnet_pretrained", "efficientnet_from_scratch", "owlresnet"]
 
 def collate_fn(batch):
     return {
@@ -50,13 +54,8 @@ def yes_grad(model):
         p.requires_grad = True
 
 def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, trainOnlyHead, wandBProject, base_lr = 1e-3):
-
     os.environ["WANDB_PROJECT"] = f"<{wandBProject}>"  # name your W&B project
     os.environ["WANDB_LOG_MODEL"] = "checkpoint"  # log all model checkpoints
-
-    if trainOnlyHead == True:
-        no_grad(model)
-        yes_grad(model.classifier)
 
     training_args = TrainingArguments(
         output_dir = save_dir,
@@ -81,6 +80,8 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
         training_args.train_batch_size * training_args.gradient_accumulation_steps * training_args.world_size
     )
     training_args.learning_rate = base_lr * total_train_batch_size / 256
+
+    print(torch.cuda.is_available())
     
     trainer = Trainer(
         model=model,
@@ -91,12 +92,69 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
         compute_metrics=compute_metrics,
         data_collator=collate_fn
     )
-    print("starting train")
     train_results = trainer.train()
-    
 
     return train_results
 
+def instantiate_model(model_name: str):
+    if model_name not in models:
+        raise Exception("Critical error: Model not valid. Please check your code.")
+        return None
+
+    if model_name == "resnet_from_scratch":
+        # Create custom resnet
+        resnet_custom_config = ResNetConfig(
+            embedding_size = 64,
+            hidden_sizes = [256, 512, 1024, 2048],
+            depths = [3, 4, 6, 3],
+            layer_type = "bottleneck",
+            hidden_act = "relu",
+            out_features = ["stage1"],
+            num_labels = 5,
+            #num_hidden_layers = 3,
+        )
+        model = ResNetForImageClassification(resnet_custom_config)
+    
+    if model_name == "resnet_pretrained":
+        # Create pretrained resnet
+        print("hello")
+        model = ResNetForImageClassification.from_pretrained("microsoft/resnet-50", num_labels=5, ignore_mismatched_sizes=True)
+        no_grad(model)
+        yes_grad(model.classifier)
+    
+    if model_name == "efficientnet_from_scratch":
+        # Custom efficientnet
+        efficientnet_custom_config = EfficientNetConfig(
+            embedding_size = 64,
+            hidden_sizes = [256, 512, 1024, 2048],
+            width_coefficient = 2.0,
+            depth_coefficient = 3.1,
+            depths = [3, 4, 6, 3],
+            layer_type = "bottleneck",
+            hidden_act = "relu",
+            out_features = ["stage1"],
+            num_labels = 5,
+            #num_hidden_layers = 3,
+        )
+        model = EfficientNetForImageClassification(efficientnet_custom_config)
+
+    if model_name == "efficientnet_pretrained":
+        # Pretrained efficientnet
+        model = EfficientNetForImageClassification.from_pretrained("google/efficientnet-b0", num_labels=5, ignore_mismatched_sizes=True)
+        no_grad(model)
+        yes_grad(model.classifier)
+
+    if model_name == "owlresnet":
+        ## Instantiate the Owl/resnet concatenation model
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        resnet = ResNetForImageClassification.from_pretrained("microsoft/resnet-50").to(device)
+        vit = Owlv2VisionModel.from_pretrained("google/owlv2-base-patch16").to(device)
+        processor = AutoProcessor.from_pretrained("google/owlv2-base-patch16")#.to(device)
+        model = OwlResNetModel(vit = vit, resnet = resnet, tokenizer = processor).to(device)
+        no_grad(model)
+        yes_grad(model.classifier)
+        
+    return model
 
 def ImageFolderDataSets(data_dir, data_transforms):
     """
@@ -126,66 +184,9 @@ if __name__ == "__main__":
     }
 
     # loading training and validation datasets
-
     image_datasets = ImageFolderDataSets("../data/dataset/", data_transforms)
-    
-    
-    ## RESNET TRAINER
 
-    resnet_custom_config = ResNetConfig(
-        embedding_size = 64,
-        hidden_sizes = [256, 512, 1024, 2048],
-        depths = [3, 4, 6, 3, ],
-        layer_type = "bottleneck",
-        hidden_act = "relu",
-        out_features = ["stage1"],
-        num_labels = 5,
-        #num_hidden_layers = 3,
-    )
-
-    resnet_finetune = {
-        "model": ResNetForImageClassification(resnet_custom_config),
-        "save_dir": "pretrained_resnet",
-        "batch_size": 32,
-        "num_epochs":  50,
-        "collate_fn": collate_fn,
-        "compute_metrics": compute_metrics,
-        "trainOnlyHead": True,
-        "wandBProject": "resnet_finetuned",
-    }
-
-    train(**resnet_finetune)
-
-    ##EFFICENT_NET TRAINER
-
-    efficientNet_custom_config = EfficientNetConfig(
-        embedding_size = 64,
-        hidden_sizes = [256, 512, 1024, 2048],
-        width_coefficient = 2.0,
-        depth_coefficient = 3.1,
-        depths = [3, 4, 6, 3],
-        layer_type = "bottleneck",
-        hidden_act = "relu",
-        out_features = ["stage1"],
-        num_labels = 5,
-        #num_hidden_layers = 3,
-    )
-
-    print(torch.cuda.is_available())
-    
-
-    ## Concatenation Model using object detection OwLViT and ResNet
-    
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    resnet = ResNetForImageClassification.from_pretrained("microsoft/resnet-50").to(device)
-    print(resnet.device)
-    vit = Owlv2VisionModel.from_pretrained("google/owlv2-base-patch16").to(device)
-    print(vit.device)
-    processor = AutoProcessor.from_pretrained("google/owlv2-base-patch16")#.to(device)
-    owlresnet = OwlResNetModel(vit = vit, resnet = resnet, tokenizer = processor).to(device)
-    print()
-
-    owlresnet_train_dict = {
+    ''' owlresnet_train_dict = {
     "model": owlresnet,
     "save_dir": "pretrained_resnet",
     "batch_size": 4,
@@ -194,6 +195,28 @@ if __name__ == "__main__":
     "compute_metrics": compute_metrics,
     "trainOnlyHead": True,
     "wandBProject": "XXX",
-    }
+    }'''
 
-    train(**owlresnet_train_dict)
+    base_rates = [1e-3, 3e-4, 5e-6]
+    batch_sizes = [32, 64, 128, 256]
+
+    for modelName in models:
+        for size in batch_sizes:
+            for base_lr in base_rates:
+                trial_name = modelName + "_" + str(size) + "_" + str(base_lr)
+
+                modelDict = {
+                "model": instantiate_model(modelName),
+                "save_dir": "saved_models/" + trial_name,
+                "batch_size": size,
+                "num_epochs":  100,
+                "collate_fn": collate_fn,
+                "compute_metrics": compute_metrics,
+                "trainOnlyHead": "ambiguous",
+                "wandBProject": trial_name,
+                "base_lr": base_lr
+                }
+
+                print("Beginning training - " + trial_name + ": \n")
+
+                train(**modelDict)
