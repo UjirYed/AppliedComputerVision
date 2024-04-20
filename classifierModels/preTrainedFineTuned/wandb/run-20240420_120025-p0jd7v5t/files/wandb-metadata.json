@@ -1,8 +1,8 @@
 {
     "os": "macOS-13.5.2-arm64-arm-64bit",
     "python": "3.9.6",
-    "heartbeatAt": "2024-04-19T01:02:58.130356",
-    "startedAt": "2024-04-19T01:02:57.671408",
+    "heartbeatAt": "2024-04-20T16:00:25.752902",
+    "startedAt": "2024-04-20T16:00:25.347388",
     "docker": null,
     "cuda": null,
     "args": [],
@@ -11,7 +11,7 @@
     "codePathLocal": null,
     "git": {
         "remote": "https://github.com/UjirYed/AppliedComputerVision.git",
-        "commit": "f01a4af9263327fdb6b3a3236ab97b078767fbe5"
+        "commit": "33fe13c70e10b1ac8f4b02e7809cbb3dc967e9f3"
     },
     "email": "rd3054@columbia.edu",
     "root": "/Users/rijudey/Documents/GitHub/AppliedComputerVision",

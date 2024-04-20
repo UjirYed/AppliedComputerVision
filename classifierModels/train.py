@@ -22,8 +22,11 @@ from transformers import (
     EfficientNetConfig,
     EfficientNetForImageClassification,
     ResNetForImageClassification,
-    ResNetConfig
+    ResNetConfig,
+    Owlv2VisionModel,
+    AutoProcessor,
 )
+from concatModels.OwLResNet import OwlResNetModel
 import evaluate
 import accelerate
 import tqdm
@@ -46,7 +49,10 @@ def yes_grad(model):
     for p in model.parameters():
         p.requires_grad = True
 
-def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, trainOnlyHead):
+def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, trainOnlyHead, wandBProject, base_lr = 1e-3):
+
+    os.environ["WANDB_PROJECT"] = f"<{wandBProject}>"  # name your W&B project
+    os.environ["WANDB_LOG_MODEL"] = "checkpoint"  # log all model checkpoints
 
     if trainOnlyHead == True:
         no_grad(model)
@@ -70,12 +76,11 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
     )
 
     ## setting base learning rate
-    base_learning_rate = 1e-3
+    base_lr = base_lr
     total_train_batch_size = (
         training_args.train_batch_size * training_args.gradient_accumulation_steps * training_args.world_size
     )
-
-    training_args.learning_rate = base_learning_rate * total_train_batch_size / 256
+    training_args.learning_rate = base_lr * total_train_batch_size / 256
     
     trainer = Trainer(
         model=model,
@@ -86,8 +91,9 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
         compute_metrics=compute_metrics,
         data_collator=collate_fn
     )
-
+    print("starting train")
     train_results = trainer.train()
+    
 
     return train_results
 
@@ -144,7 +150,8 @@ if __name__ == "__main__":
         "num_epochs":  50,
         "collate_fn": collate_fn,
         "compute_metrics": compute_metrics,
-        "trainOnlyHead": True
+        "trainOnlyHead": True,
+        "wandBProject": "resnet_finetuned",
     }
 
     train(**resnet_finetune)
@@ -165,3 +172,28 @@ if __name__ == "__main__":
     )
 
     print(torch.cuda.is_available())
+    
+
+    ## Concatenation Model using object detection OwLViT and ResNet
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    resnet = ResNetForImageClassification.from_pretrained("microsoft/resnet-50").to(device)
+    print(resnet.device)
+    vit = Owlv2VisionModel.from_pretrained("google/owlv2-base-patch16").to(device)
+    print(vit.device)
+    processor = AutoProcessor.from_pretrained("google/owlv2-base-patch16")#.to(device)
+    owlresnet = OwlResNetModel(vit = vit, resnet = resnet, tokenizer = processor).to(device)
+    print()
+
+    owlresnet_train_dict = {
+    "model": owlresnet,
+    "save_dir": "pretrained_resnet",
+    "batch_size": 4,
+    "num_epochs":  50,
+    "collate_fn": collate_fn,
+    "compute_metrics": compute_metrics,
+    "trainOnlyHead": True,
+    "wandBProject": "XXX",
+    }
+
+    train(**owlresnet_train_dict)

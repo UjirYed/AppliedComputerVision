@@ -6,3 +6,4 @@
 webapp/__pycache__/app.cpython-312.pyc
 /data/autoLabelModels/testdataset
 diningHallEnv
+/data/classifierModels/wandb/
