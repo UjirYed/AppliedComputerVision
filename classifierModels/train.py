@@ -72,7 +72,7 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
         remove_unused_columns=False,
         push_to_hub=False,
         load_best_model_at_end=True,
-        dataloader_num_workers=4,
+        dataloader_num_workers=0,
         gradient_accumulation_steps=8,
     )
 
@@ -201,9 +201,9 @@ if __name__ == "__main__":
     "wandBProject": "XXX",
     }'''
 
-    base_rates = [1e-3, 3e-4, 5e-6]
-    batch_sizes = [32, 64, 128, 256]
-    dropouts = [False, .2, .5]
+    base_rates = [1e-3, 3e-4]
+    batch_sizes = [64, 128]
+    dropouts = [False, .2]
 
     for modelName in models:
         for size in batch_sizes:
