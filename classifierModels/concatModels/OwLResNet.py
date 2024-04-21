@@ -45,7 +45,7 @@ class OwlResNetModel(nn.Module):
                vit,
                resnet,
                tokenizer,
-               device = 'cpu'):
+               device = 'cpu', use_dropout=False):
     super().__init__()
 
     self.vit = vit
@@ -58,15 +58,16 @@ class OwlResNetModel(nn.Module):
 
     self.tokenizer = tokenizer
     self.device = device
+
+    self.dropout = nn.Dropout(p=use_dropout)
     
     self.concatenatedLayerSize = vit.config.hidden_size + 1000
     self.classifier = nn.Linear(self.concatenatedLayerSize, 5)
-    print(self.concatenatedLayerSize)
 
   def forward(self, pixel_values, labels = None):
       
       # Computing image embeddings
-      image_embeddings = self.resnet(pixel_values).logits
+      image_embeddings = self.dropout(self.resnet(pixel_values).logits)
       print("image embeddings shape: ", image_embeddings.shape)
       
       # Computing caption embeddings
@@ -74,7 +75,7 @@ class OwlResNetModel(nn.Module):
       inputs = self.tokenizer(images = pixel_values, return_tensors="pt", do_rescale=False)
 
       #Pass the tokenized captions through the OwlViT model
-      vit_output = self.vit(**inputs)
+      vit_output = self.dropout(self.vit(**inputs))
 
       #get the pooler output from the vit model's output
       pooled_output = vit_output.pooler_output

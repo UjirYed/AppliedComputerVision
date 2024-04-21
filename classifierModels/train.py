@@ -63,14 +63,16 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
         per_device_eval_batch_size=32,
         evaluation_strategy="epoch",
         save_strategy="epoch",
+        logging_strategy="epoch",
         num_train_epochs=num_epochs,
         lr_scheduler_type="cosine",
-        logging_steps=10,
+        #logging_steps=10,
         save_total_limit=2,
+        metric_for_best_model="accuracy",
         remove_unused_columns=False,
         push_to_hub=False,
         load_best_model_at_end=True,
-        dataloader_num_workers=0,
+        dataloader_num_workers=4,
         gradient_accumulation_steps=8,
     )
 
@@ -96,7 +98,7 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
 
     return train_results
 
-def instantiate_model(model_name: str):
+def instantiate_model(model_name: str, use_dropout=False):
     if model_name not in models:
         raise Exception("Critical error: Model not valid. Please check your code.")
         return None
@@ -111,6 +113,7 @@ def instantiate_model(model_name: str):
             hidden_act = "relu",
             out_features = ["stage1"],
             num_labels = 5,
+            dropout_rate = use_dropout,
             #num_hidden_layers = 3,
         )
         model = ResNetForImageClassification(resnet_custom_config)
@@ -134,6 +137,7 @@ def instantiate_model(model_name: str):
             hidden_act = "relu",
             out_features = ["stage1"],
             num_labels = 5,
+            dropout_rate = use_dropout,
             #num_hidden_layers = 3,
         )
         model = EfficientNetForImageClassification(efficientnet_custom_config)
@@ -150,7 +154,7 @@ def instantiate_model(model_name: str):
         resnet = ResNetForImageClassification.from_pretrained("microsoft/resnet-50").to(device)
         vit = Owlv2VisionModel.from_pretrained("google/owlv2-base-patch16").to(device)
         processor = AutoProcessor.from_pretrained("google/owlv2-base-patch16")#.to(device)
-        model = OwlResNetModel(vit = vit, resnet = resnet, tokenizer = processor).to(device)
+        model = OwlResNetModel(vit = vit, resnet = resnet, tokenizer = processor, use_dropout=use_dropout).to(device)
         no_grad(model)
         yes_grad(model.classifier)
         
@@ -199,24 +203,26 @@ if __name__ == "__main__":
 
     base_rates = [1e-3, 3e-4, 5e-6]
     batch_sizes = [32, 64, 128, 256]
+    dropouts = [False, .2, .5]
 
     for modelName in models:
         for size in batch_sizes:
             for base_lr in base_rates:
-                trial_name = modelName + "_" + str(size) + "_" + str(base_lr)
+                for dropout in dropouts:
+                    trial_name = modelName + "_" + str(size) + "_" + str(base_lr) + "_" + str(dropout)
 
-                modelDict = {
-                "model": instantiate_model(modelName),
-                "save_dir": "saved_models/" + trial_name,
-                "batch_size": size,
-                "num_epochs":  100,
-                "collate_fn": collate_fn,
-                "compute_metrics": compute_metrics,
-                "trainOnlyHead": "ambiguous",
-                "wandBProject": trial_name,
-                "base_lr": base_lr
-                }
+                    modelDict = {
+                    "model": instantiate_model(modelName, use_dropout=dropout),
+                    "save_dir": "saved_models/" + trial_name,
+                    "batch_size": size,
+                    "num_epochs":  100,
+                    "collate_fn": collate_fn,
+                    "compute_metrics": compute_metrics,
+                    "trainOnlyHead": "ambiguous",
+                    "wandBProject": trial_name,
+                    "base_lr": base_lr
+                    }
 
-                print("Beginning training - " + trial_name + ": \n")
+                    print("Beginning training - " + trial_name + ": \n")
 
-                train(**modelDict)
+                    train(**modelDict)
