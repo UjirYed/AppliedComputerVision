@@ -1,0 +1,49 @@
+{
+    "os": "macOS-13.5.2-arm64-arm-64bit",
+    "python": "3.9.6",
+    "heartbeatAt": "2024-04-20T21:54:03.059600",
+    "startedAt": "2024-04-20T21:54:02.576041",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/rijudey/Documents/GitHub/AppliedComputerVision/classifierModels/train.py",
+    "codePathLocal": "train.py",
+    "codePath": "classifierModels/train.py",
+    "git": {
+        "remote": "https://github.com/UjirYed/AppliedComputerVision.git",
+        "commit": "ffcccce9abcf850c54f1c937404fb65b4f649bd1"
+    },
+    "email": "rd3054@columbia.edu",
+    "root": "/Users/rijudey/Documents/GitHub/AppliedComputerVision",
+    "host": "Rijus-MacBook-Air-2.local",
+    "username": "rijudey",
+    "executable": "/Users/rijudey/Documents/GitHub/AppliedComputerVision/diningHallEnv/bin/python3",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 3204,
+        "min": 600,
+        "max": 3204
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3204,
+            "min": 600,
+            "max": 3204
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 228.27386474609375,
+            "used": 8.542133331298828
+        }
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 16.0
+    }
+}

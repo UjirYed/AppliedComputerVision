@@ -10,7 +10,7 @@ compiled:
 - '        visible_textareas.append(textarea)'
 - first_visible_textarea = visible_textareas[0]
 - env.click(first_visible_textarea)
-- env.send_keys(first_visible_textarea, "dining commons dining hall tables people")
+- env.send_keys(first_visible_textarea, "dining hall university college people")
 - env.send_keys(first_visible_textarea, Keys.ENTER)
 - env.scroll("bottom")
 - env.wait(3)
@@ -22,7 +22,7 @@ compiled:
 - '        if element.get_attribute("src") not in image_list:'
 - '            image_list.append(element.get_attribute("src"))'
 - '    env.scroll("bottom")'
-- env.save("\n".join(image_list), "images.txt")
+- env.save("\n".join(image_list), "image_urls/dining hall university college people.txt")
 - env.wait(20)
 instructions:
 - '- Go to Google.com'

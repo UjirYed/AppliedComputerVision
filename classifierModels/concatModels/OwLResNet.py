@@ -93,6 +93,59 @@ class OwlResNetModel(nn.Module):
       print(full_embeddings.shape)
       return (logits)
       
+
+class YOLOResNetModel(nn.Module):
+  def __init__(self,
+               yolo,
+               resnet,
+               tokenizer,
+               device = 'cpu', use_dropout=False):
+    super().__init__()
+
+    self.yolo = yolo
+    self.yolo.eval()
+    #self.vit.to(device)
+    
+    self.resnet = resnet
+    #self.resnet.to(device)
+    self.resnet.eval()
+
+    self.tokenizer = tokenizer
+    self.device = device
+
+    self.dropout = nn.Dropout(p=use_dropout)
+    
+    self.concatenatedLayerSize = yolo.config.hidden_size + 1000
+    self.classifier = nn.Linear(self.concatenatedLayerSize, 5)
+
+  def forward(self, pixel_values, labels = None):
+      
+      # Computing image embeddings
+      image_embeddings = self.dropout(self.resnet(pixel_values).logits)
+      print("image embeddings shape: ", image_embeddings.shape)
+      
+      # Computing caption embeddings
+      # tokenize all captions
+      inputs = self.tokenizer(images = pixel_values, return_tensors="pt", do_rescale=False)
+
+      #Pass the tokenized captions through the OwlViT model
+      yolo_output = self.dropout(self.yolo(**inputs))
+
+      #get the pooler output from the vit model's output
+      pooled_output = yolo_output.pooler_output
+
+      # Concatenate image and caption embeddings along the batch dimension
+      full_embeddings = torch.cat((image_embeddings, pooled_output), dim=1)
+
+      logits = self.classifier(full_embeddings)
+     
+      if labels is not None:
+        criterion = torch.nn.CrossEntropyLoss()#weight=torch.tensor([1.0, 2.0])
+        loss = criterion(logits, labels)
+        return (loss, logits)
+      
+      print(full_embeddings.shape)
+      return (logits)
       
   
 

@@ -25,8 +25,11 @@ from transformers import (
     ResNetConfig,
     Owlv2VisionModel,
     AutoProcessor,
-    set_seed
+    ViTForImageClassification,
+    Swinv2ForImageClassification,
+    set_seed,
 )
+from peft import LoraConfig, get_peft_model
 from concatModels.OwLResNet import OwlResNetModel
 import evaluate
 import accelerate
@@ -103,6 +106,41 @@ def instantiate_model(model_name: str, use_dropout=False):
         raise Exception("Critical error: Model not valid. Please check your code.")
         return None
 
+    if model_name == "ViTForImageClassification":
+        config = LoraConfig(
+            r=16,
+            lora_alpha=16,
+            target_modules=["query", "value"],
+            lora_dropout=0.1,
+            bias="none",
+            modules_to_save=["classifier"],
+        )
+        vit = ViTForImageClassification.from_pretrained(
+                "google/vit-base-patch16-224",
+                num_labels=5,
+                ignore_mismatched_sizes=True,
+                output_attentions = True
+        )
+        model = get_peft_model(vit, config)
+    
+    if model_name == "Swinv2ForImageClassification":
+
+        config = LoraConfig(
+            r=16,
+            lora_alpha=16,
+            target_modules=["query", "value"],
+            lora_dropout=0.1,
+            bias="none",
+            modules_to_save=["classifier"],
+        )
+
+        swin = Swinv2ForImageClassification.from_pretrained(
+            "microsoft/swinv2-tiny-patch4-window8-256",
+            num_labels = 5,
+            ignore_mismatched_sizes = True
+        )
+        model = get_peft_model(swin, config)
+        
     if model_name == "resnet_from_scratch":
         # Create custom resnet
         resnet_custom_config = ResNetConfig(
