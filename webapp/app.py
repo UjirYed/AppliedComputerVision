@@ -26,7 +26,7 @@ def occupancy():
             filename = secure_filename(f.filename)
             print(filename)
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return 'success'
+            return '4'
 
     print(request)
     return 'fail'

@@ -36,7 +36,7 @@ import accelerate
 import tqdm
 
 set_seed(420)
-models = ["resnet_pretrained", "resnet_from_scratch", "efficientnet_pretrained", "efficientnet_from_scratch", "owlresnet"]
+models = ["Swinv2ForImageClassification"]
 
 def collate_fn(batch):
     return {
@@ -77,6 +77,7 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
         load_best_model_at_end=True,
         dataloader_num_workers=0,
         gradient_accumulation_steps=8,
+        label_names=["labels"]
     )
 
     ## setting base learning rate
@@ -111,7 +112,7 @@ def instantiate_model(model_name: str, use_dropout=False):
             r=16,
             lora_alpha=16,
             target_modules=["query", "value"],
-            lora_dropout=0.1,
+            lora_dropout=use_dropout,
             bias="none",
             modules_to_save=["classifier"],
         )
@@ -129,7 +130,7 @@ def instantiate_model(model_name: str, use_dropout=False):
             r=16,
             lora_alpha=16,
             target_modules=["query", "value"],
-            lora_dropout=0.1,
+            lora_dropout=use_dropout,
             bias="none",
             modules_to_save=["classifier"],
         )
@@ -189,10 +190,10 @@ def instantiate_model(model_name: str, use_dropout=False):
     if model_name == "owlresnet":
         ## Instantiate the Owl/resnet concatenation model
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        resnet = ResNetForImageClassification.from_pretrained("microsoft/resnet-50").to(device)
-        vit = Owlv2VisionModel.from_pretrained("google/owlv2-base-patch16").to(device)
+        resnet = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
+        vit = Owlv2VisionModel.from_pretrained("google/owlv2-base-patch16")
         processor = AutoProcessor.from_pretrained("google/owlv2-base-patch16")#.to(device)
-        model = OwlResNetModel(vit = vit, resnet = resnet, tokenizer = processor, use_dropout=use_dropout).to(device)
+        model = OwlResNetModel(vit = vit, resnet = resnet, tokenizer = processor, use_dropout=use_dropout)
         no_grad(model)
         yes_grad(model.classifier)
         

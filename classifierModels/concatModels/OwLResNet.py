@@ -48,6 +48,11 @@ class OwlResNetModel(nn.Module):
                device = 'cpu', use_dropout=False):
     super().__init__()
 
+    self.device = device
+
+    if torch.cuda.is_available():
+       self.device = 'cuda'
+
     self.vit = vit
     self.vit.eval()
     #self.vit.to(device)
@@ -57,7 +62,7 @@ class OwlResNetModel(nn.Module):
     self.resnet.eval()
 
     self.tokenizer = tokenizer
-    self.device = device
+    
 
     self.dropout = nn.Dropout(p=use_dropout)
     
@@ -68,7 +73,7 @@ class OwlResNetModel(nn.Module):
       
       # Computing image embeddings
       image_embeddings = self.dropout(self.resnet(pixel_values).logits)
-      print("image embeddings shape: ", image_embeddings.shape)
+      #print("image embeddings shape: ", image_embeddings.shape)
       
       # Computing caption embeddings
       # tokenize all captions

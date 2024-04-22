@@ -6,6 +6,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Jersey+20&display=swap" rel="stylesheet">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='snipped.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='index.css') }}">
 </head>
 <body>
@@ -24,17 +25,14 @@
             <h2 class="pleaseWait">Please wait...</p>
         </div>
         <div id="output">
-            <div class="cu-dining-crowdedness ng-scope" data-ng-if="crowdedness &amp;&amp; activeLocation.display_crowd == '1' &amp;&amp; activeLocation.crowd_id" style="display: block;">
-                <div class="indicator-item">
+                <div class="indicator-item snipcss-CrbsD">
                     <p>Current Seating Capacity&nbsp;<a href="javascript:void(0)" data-target="#indicator-text" class="cu-dining-trigger"><i class="fa fa-info-circle"></i></a></p>
-                    <!-- ngIf: activeLocation.crowd_info -->
                     <div class="indicator">
-                        <div class="marker ng-binding" data-ng-bind="getCrowdedness(activeLocation.crowd_id, activeLocation.crowd_max) + ' Full'" style="left: 72%; display: block;">72% Full</div>
-                        <div class="bar" style="width: 72%;"></div>
+                        <div class="marker ng-binding style-dwa4e" data-ng-bind="getCrowdedness(activeLocation.crowd_id, activeLocation.crowd_max) + ' Full'" id="style-dwa4e">60% Full</div>
+                        <div class="bar style-8crs1" id="style-8crs1"></div>
                     </div>
                 </div>
             </div>
-            <p id="result"></p>
         </div>
     </div>
 
@@ -57,9 +55,36 @@
                     response = xhr.responseText;
 
                     document.getElementById("wait").style.display = "none";
-                    document.getElementById("output").style.display = "inline-block"
+                    document.getElementById("output").style.display = "inline-block";
+                    
+                    if (response != 'fail')
+                    {
+                        width = ((response / 5) * 100) + '%';
+                        console.log(width)
+                        document.getElementById('style-8crs1').style.width = width
+                        document.getElementById('style-dwa4e').style.left = width
 
-                    document.getElementById("result").innerText = response
+                        switch (response)
+                        {
+                            case '1':
+                                document.getElementById("style-dwa4e").innerText = 'Not busy';
+                                break;
+                            case '2':
+                                document.getElementById("style-dwa4e").innerText = 'A little busy';
+                                break;
+                            case '3':
+                                document.getElementById("style-dwa4e").innerText = 'Moderately busy';
+                                break;
+                            case '4':
+                                document.getElementById("style-dwa4e").innerText = 'Busy';
+                                break;
+                            case '5':
+                                document.getElementById("style-dwa4e").innerText = 'Extremely busy';
+                                break;
+                        }
+                    }
+
+                    
                 } else {
                     console.error('Error uploading image');
                 }
