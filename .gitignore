@@ -10,3 +10,4 @@ diningHallEnv
 /classifierModels/saved_models
 classifierModels/preTrainedFineTuned/wandb
 classifierModels/wandb
+**/.DS_Store
