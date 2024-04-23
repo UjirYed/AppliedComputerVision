@@ -28,15 +28,17 @@ from transformers import (
     ViTForImageClassification,
     Swinv2ForImageClassification,
     set_seed,
+    YolosModel,
+    AutoImageProcessor
 )
 from peft import LoraConfig, get_peft_model
-from concatModels.OwLResNet import OwlResNetModel
+from concatModels.OwLResNet import OwlResNetModel, YOLOResNetModel
 import evaluate
 import accelerate
 import tqdm
 
 set_seed(420)
-models = ["Swinv2ForImageClassification"]
+models = ["yoloresnet"]
 
 def collate_fn(batch):
     return {
@@ -191,9 +193,20 @@ def instantiate_model(model_name: str, use_dropout=False):
         ## Instantiate the Owl/resnet concatenation model
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         resnet = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
-        vit = Owlv2VisionModel.from_pretrained("google/owlv2-base-patch16")
-        processor = AutoProcessor.from_pretrained("google/owlv2-base-patch16")#.to(device)
+        #vit = Owlv2VisionModel.from_pretrained("google/owlv2-base-patch16")
+        vit = ViTForImageClassification.from_pretrained("google/vit-base-patch16-224")
+        processor = AutoProcessor.from_pretrained("google/vit-base-patch16-224")#.to(device)
         model = OwlResNetModel(vit = vit, resnet = resnet, tokenizer = processor, use_dropout=use_dropout)
+        no_grad(model)
+        yes_grad(model.classifier)
+
+    if model_name == "yoloresnet":
+        ## Instantiate the yolo/resnet concatenation model
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        resnet = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
+        yolo = YolosModel.from_pretrained("hustvl/yolos-small")
+        processor = AutoImageProcessor.from_pretrained("hustvl/yolos-small")
+        model = YOLOResNetModel(yolo = yolo, resnet = resnet, tokenizer = processor, use_dropout=use_dropout)
         no_grad(model)
         yes_grad(model.classifier)
         
@@ -216,13 +229,13 @@ if __name__ == "__main__":
             transforms.RandomResizedCrop(224),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+            # transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]) # comment out for transformers
         ]),
         'val': transforms.Compose([
             transforms.Resize(256),
             transforms.CenterCrop(224),
             transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+            # transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]) # comment out for transformers
         ]),
     }
 
