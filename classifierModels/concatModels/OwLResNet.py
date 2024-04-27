@@ -62,7 +62,6 @@ class OwlResNetModel(nn.Module):
     self.resnet.eval()
 
     self.tokenizer = tokenizer
-    
 
     self.dropout = nn.Dropout(p=use_dropout)
     
@@ -107,6 +106,9 @@ class YOLOResNetModel(nn.Module):
                device = 'cpu', use_dropout=False):
     super().__init__()
 
+    if torch.cuda.is_available():
+       self.device = 'cuda'
+
     self.yolo = yolo
     self.yolo.eval()
     #self.vit.to(device)
@@ -116,7 +118,6 @@ class YOLOResNetModel(nn.Module):
     self.resnet.eval()
 
     self.tokenizer = tokenizer
-    self.device = device
 
     self.dropout = nn.Dropout(p=use_dropout)
     
@@ -127,17 +128,16 @@ class YOLOResNetModel(nn.Module):
       
       # Computing image embeddings
       image_embeddings = self.dropout(self.resnet(pixel_values).logits)
-      print("image embeddings shape: ", image_embeddings.shape)
       
       # Computing caption embeddings
       # tokenize all captions
-      inputs = self.tokenizer(images = pixel_values, return_tensors="pt", do_rescale=False)
+      inputs = self.tokenizer(images = pixel_values, return_tensors="pt", do_rescale=False).to(self.device)
 
       #Pass the tokenized captions through the OwlViT model
-      yolo_output = self.dropout(self.yolo(**inputs))
+      yolo_output = self.yolo(**inputs)
 
       #get the pooler output from the vit model's output
-      pooled_output = yolo_output.pooler_output
+      pooled_output = self.dropout(yolo_output.pooler_output)
 
       # Concatenate image and caption embeddings along the batch dimension
       full_embeddings = torch.cat((image_embeddings, pooled_output), dim=1)
@@ -149,9 +149,4 @@ class YOLOResNetModel(nn.Module):
         loss = criterion(logits, labels)
         return (loss, logits)
       
-      print(full_embeddings.shape)
       return (logits)
-      
-  
-
-   
