@@ -37,6 +37,8 @@ import evaluate
 import accelerate
 import tqdm
 
+from utility import count_parameters
+
 set_seed(420)
 models = ["yoloresnet"]
 
@@ -58,7 +60,7 @@ def yes_grad(model):
     for p in model.parameters():
         p.requires_grad = True
 
-def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, trainOnlyHead, wandBProject, base_lr = 1e-3):
+def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, wandBProject, base_lr = 1e-3):
     os.environ["WANDB_PROJECT"] = f"<{wandBProject}>"  # name your W&B project
     os.environ["WANDB_LOG_MODEL"] = "checkpoint"  # log all model checkpoints
 
@@ -89,7 +91,7 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
     )
     training_args.learning_rate = base_lr * total_train_batch_size / 256
 
-    print(torch.cuda.is_available())
+    print("GPU available? ", torch.cuda.is_available())
     
     trainer = Trainer(
         model=model,
@@ -104,7 +106,7 @@ def train(model, save_dir, batch_size, num_epochs, collate_fn, compute_metrics, 
 
     return train_results
 
-def instantiate_model(model_name: str, use_dropout=False):
+def instantiate_model(model_name: str, use_dropout=False, numActivatedLayers = 0):
     if model_name not in models:
         raise Exception("Critical error: Model not valid. Please check your code.")
         return None
@@ -207,9 +209,11 @@ def instantiate_model(model_name: str, use_dropout=False):
         yolo = YolosModel.from_pretrained("hustvl/yolos-small")
         processor = AutoImageProcessor.from_pretrained("hustvl/yolos-small")
         model = YOLOResNetModel(yolo = yolo, resnet = resnet, tokenizer = processor, use_dropout=use_dropout)
+
         no_grad(model)
-        yes_grad(model.classifier)
-        
+        for i in range(numActivatedLayers):
+            yes_grad(yolo.encoder.layer[i])
+        count_parameters(yolo)
     return model
 
 def ImageFolderDataSets(data_dir, data_transforms):
@@ -264,13 +268,12 @@ if __name__ == "__main__":
                     trial_name = modelName + "_" + str(size) + "_" + str(base_lr) + "_" + str(dropout)
 
                     modelDict = {
-                    "model": instantiate_model(modelName, use_dropout=dropout),
+                    "model": instantiate_model(modelName, use_dropout=dropout, numActivatedLayers=3),
                     "save_dir": "saved_models/" + trial_name,
                     "batch_size": size,
                     "num_epochs":  100,
                     "collate_fn": collate_fn,
                     "compute_metrics": compute_metrics,
-                    "trainOnlyHead": "ambiguous",
                     "wandBProject": trial_name,
                     "base_lr": base_lr
                     }

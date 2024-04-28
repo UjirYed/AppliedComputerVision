@@ -108,6 +108,8 @@ class YOLOResNetModel(nn.Module):
 
     if torch.cuda.is_available():
        self.device = 'cuda'
+    else:
+       self.device = 'cpu'
 
     self.yolo = yolo
     self.yolo.eval()
