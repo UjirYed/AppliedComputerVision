@@ -71,7 +71,7 @@ class OwlResNetModel(nn.Module):
   def forward(self, pixel_values, labels = None):
       
       # Computing image embeddings
-      image_embeddings = self.dropout(self.resnet(pixel_values).logits)
+      image_embeddings = self.dropout(self.resnet(pixel_values))
       #print("image embeddings shape: ", image_embeddings.shape)
       
       # Computing caption embeddings
@@ -117,13 +117,14 @@ class YOLOResNetModel(nn.Module):
     
     self.resnet = resnet
     #self.resnet.to(device)
+    self.resnet.classifier[1] = nn.Identity()
     self.resnet.eval()
 
     self.tokenizer = tokenizer
 
     self.dropout = nn.Dropout(p=use_dropout)
     
-    self.concatenatedLayerSize = yolo.config.hidden_size + 1000
+    self.concatenatedLayerSize = yolo.config.hidden_size + 2048
     self.classifier = nn.Linear(self.concatenatedLayerSize, 5)
 
   def forward(self, pixel_values, labels = None):

@@ -36,8 +36,7 @@ from concatModels.OwLResNet import OwlResNetModel, YOLOResNetModel
 import evaluate
 import accelerate
 import tqdm
-
-from utility import count_parameters
+#from utility import count_parameters
 
 set_seed(420)
 models = ["yoloresnet"]
@@ -205,15 +204,27 @@ def instantiate_model(model_name: str, use_dropout=False, numActivatedLayers = 0
     if model_name == "yoloresnet":
         ## Instantiate the yolo/resnet concatenation model
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        resnet = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
+        resnet = ResNetForImageClassification.from_pretrained("./saved_models/resnet_from_scratch_64_0.0003_False/checkpoint-346/")
+
+        config = LoraConfig(
+            r=16,
+            lora_alpha=16,
+            target_modules=["query", "value"],
+            lora_dropout=use_dropout,
+            bias="none",
+            modules_to_save=["classifier"],
+        )
+
         yolo = YolosModel.from_pretrained("hustvl/yolos-small")
         processor = AutoImageProcessor.from_pretrained("hustvl/yolos-small")
+        yolo = get_peft_model(yolo, config)
+
         model = YOLOResNetModel(yolo = yolo, resnet = resnet, tokenizer = processor, use_dropout=use_dropout)
 
         no_grad(model)
         for i in range(numActivatedLayers):
             yes_grad(yolo.encoder.layer[i])
-        count_parameters(yolo)
+        #count_parameters(yolo)
     return model
 
 def ImageFolderDataSets(data_dir, data_transforms):
