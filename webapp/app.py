@@ -1,5 +1,4 @@
 import sys
-# caution: path[0] is reserved for script path (or '' in REPL)
 sys.path.insert(1, '../classifierModels')
 from concatModels.OwLResNet import YOLOResNetModel
 from flask import Flask, flash, render_template, request, redirect, session
