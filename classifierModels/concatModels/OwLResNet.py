@@ -103,10 +103,10 @@ class YOLOResNetModel(nn.Module):
                yolo,
                resnet,
                tokenizer,
-               device = 'cpu', use_dropout=False):
+               device = 'cuda', use_dropout=False):
     super().__init__()
 
-    if torch.cuda.is_available():
+    if torch.cuda.is_available() and device != 'cpu':
        self.device = 'cuda'
     else:
        self.device = 'cpu'
