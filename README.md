@@ -18,5 +18,5 @@ Scripts used to scrape, label, process and clean the data necessary for this pro
 
 ## Demo
 
-![Dining Hall Web App Demo]([https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif](https://github.com/UjirYed/AppliedComputerVision/blob/main/ezgif.com-speed.gif))
+![Dining Hall Web App Demo](https://github.com/UjirYed/AppliedComputerVision/blob/main/ezgif.com-speed.gif)
 
