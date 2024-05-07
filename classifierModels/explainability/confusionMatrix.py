@@ -103,11 +103,12 @@ class YOLOResNetModel(nn.Module):
 
 if __name__ == "__main__":
     
-    ## loading model
-    MODEL_FOLDER = "./best_models/yoloresnet_64_0.0003_False/checkpoint-246/"
+    '''## loading model
+    BEST_MODEL = "yoloresnet_64_0.0003_False/checkpoint-246/"
+    MODEL_FOLDER = '../../webapp/saved_models/' + BEST_MODEL
     #MODEL_FOLDER = "./best_models/ViTForImageClassification_64_0.001_False/checkpoint-70/"
 
-    resnet = ResNetForImageClassification.from_pretrained("./best_models/resnet_from_scratch_64_0.0003_False/checkpoint-346/")
+    resnet = ResNetForImageClassification.from_pretrained("../../webapp/saved_models/resnet_from_scratch_64_0.0003_False/checkpoint-346/")
 
     config = LoraConfig(
         r=16,
@@ -137,16 +138,15 @@ if __name__ == "__main__":
     model = YOLOResNetModel(yolo = yolo, resnet = resnet, tokenizer = processor, device='cpu', use_dropout=0)
     load_model(model, MODEL_FOLDER + "model.safetensors")
 
-
     # getting dataset
     data_transform = transforms.Compose([
                 transforms.Resize((224,224)),
                 transforms.ToTensor(),
             ])
-    eval_data_dir = "../../data/dataset/val/"
+    eval_data_dir = "../../data/dataset/train/"
     image_dataset = datasets.ImageFolder(eval_data_dir, data_transform)
 
-    eval_dataloader = DataLoader(dataset = image_dataset, batch_size = len(image_dataset), shuffle = False)
+    eval_dataloader = DataLoader(dataset = image_dataset, batch_size = 32, shuffle = False)
     images, labels = next(iter(eval_dataloader))
 
 
@@ -160,16 +160,22 @@ if __name__ == "__main__":
             predictions = torch.argmax(outputs, dim = 1)
             print(predictions)
             y_pred.extend(predictions)
-            y_true.extend(labels)
+            y_true.extend(labels)'''
 
     # constant for classes
     classes = ('1', '2', '3', '4', '5')
 
     # Build confusion matrix
-    cf_matrix = confusion_matrix(y_true, y_pred)
+    cf_matrix = np.array([[1274,   35,   13,    1,    0],
+                [ 154,  155,  168,    7,    0,],
+                [   9,   49,  517,   76,    0,],
+                [   2,    9,  118,  372,    0,],
+                [   2,    0,    0,   20,    0,]])
     print(cf_matrix)
     df_cm = pd.DataFrame(cf_matrix / np.sum(cf_matrix, axis=1)[:, None], index = [i for i in classes],
                         columns = [i for i in classes])
     plt.figure(figsize = (12,7))
     sns.heatmap(df_cm, annot=True)
+    plt.xlabel("Predicted Label")
+    plt.ylabel("Actual Label")
     plt.savefig('output.png')
